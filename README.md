@@ -13,4 +13,4 @@ They also have the possibility to have more insights in the concrete implementat
 The second one aims at building bridges between macro and micro-statistics regarding Income, Consumption and Wealth. Similarly to the work carried out by several organisations (OECD, ECB,...), the purpose of this workstream is to reconcile concepts from macro and micro-statistics and produce meso-data that will be consistent at the micro and the macro-level.
 
 # References
-Lahti, L., J. Huovari, M. Kainu and P. Biecek (2017), Retrieval and Analysis of Eurostat Open Data with the eurostat Package, *The R Journal, 9:1, pages 385-392, available at [https://journal.r-project.org/archive/2017/RJ-2017-019/index.html].
+Lahti, L., J. Huovari, M. Kainu and P. Biecek (2017), Retrieval and Analysis of Eurostat Open Data with the eurostat Package, *The R Journal, 9:1, pages 385-392*, available at https://journal.r-project.org/archive/2017/RJ-2017-019/index.html.
