@@ -96,3 +96,48 @@ barplot(t(figure1[,c("vatRate_NA","vatRate_hbs")]), beside = TRUE, col = c(col1,
         names.arg = figure1$geo, cex.names = 0.5,
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
 
+#################################################################################################################################################
+### FIGURE 2
+#################################################################################################################################################
+
+tmpFile <- tempfile()
+download.file("https://raw.githubusercontent.com/eurostat/ICW/master/StatisticsExplained3/data/country_order.csv", destfile = tmpFile, method = "auto")
+countryOrder <- read.csv(tmpFile)
+
+# income quintiles
+avg_consumption_incQ <- get_eurostat("hbs_exp_t133", time_format = "num")
+avg_consumption_incQ <- filter(avg_consumption_incQ, stat == "DMOM" & time == 2010 & geo %in% list_cty & quantile != "TOTAL")
+avg_consumption_incQ <- arrange(avg_consumption_incQ, geo, quantile)
+
+
+avg_consumption_incQ <- merge(avg_consumption_incQ, dataHbs, by.x = "geo", by.y = "COUNTRY")
+
+avg_consumption_incQ <- mutate(avg_consumption_incQ,
+                               consumption = values/(coeff_price*coeff_pps))
+
+str_consumption_incQ <- get_eurostat("hbs_str_t223", time_format = "num")
+str_consumption_incQ <- mutate(str_consumption_incQ,
+                               coicop = as.character(coicop),
+                               coicop = substr(coicop, 3, nchar(coicop)),
+                               lv = nchar(coicop) - 1, 
+                               share = values/1000)
+str_consumption_incQ <- filter(str_consumption_incQ, geo %in% list_cty & time == 2010 & lv == 2)
+
+consumption_incQ <- merge(str_consumption_incQ, avg_consumption_incQ, by = c("geo", "time","quantile"))
+consumption_incQ <- mutate(consumption_incQ,
+                           consumption = consumption*share)
+consumption_incQ <- merge(consumption_incQ, rateLv2, by.x = c("geo","coicop"), by.y = c("country","coicop"))
+consumption_incQ <- mutate(consumption_incQ,
+                           vat = consumption*vatRate/(100 + vatRate))
+vat_incQ <- consumption_incQ %>%
+  group_by(geo, quantile) %>%
+  summarise(vat = sum(vat),
+            consumption_pc = sum(consumption))
+
+vat_incQ <- mutate(vat_incQ,
+                   vatRate = round(vat/(consumption_pc - vat)*100, digits = 2))
+
+vat <- merge(vat, order, by.x = "geo", by.y = "Country")
+vat <- arrange(vat, Protocol_order)
+
+  
