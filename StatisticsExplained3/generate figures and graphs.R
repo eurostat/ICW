@@ -197,14 +197,11 @@ barplot(t(figure3[,2:7]), beside = TRUE, col = c(col1, col1_faded, col2, col2_fa
 
 # age of the reference person
 avg_consumption_ageRP <- get_eurostat("hbs_exp_t135", time_format = "num")
-avg_consumption_ageRP <- filter(avg_consumption_ageRP, stat == "DMOM" & time == 2010 & geo %in% list_cty & age != "TOTAL")
-avg_consumption_ageRP <- arrange(avg_consumption_ageRP, geo, age)
-
-avg_consumption_ageRP <- merge(avg_consumption_ageRP, dataHbs, by.x = "geo", by.y = "COUNTRY")
-
-avg_consumption_ageRP <- mutate(avg_consumption_ageRP,
-                                consumption = values/(coeff_price*coeff_pps))
-
+avg_consumption_ageRP <- avg_consumption_ageRP %>%
+  filter(stat == "DMOM" & time == 2010 & geo %in% list_cty & age != "TOTAL") %>%
+  arrange(geo, age) %>%
+  rename(consumption = values)
+  
 str_consumption_ageRP <- get_eurostat("hbs_str_t225", time_format = "num")
 str_consumption_ageRP <- mutate(str_consumption_ageRP,
                                 coicop = as.character(coicop),
@@ -216,7 +213,7 @@ str_consumption_ageRP <- filter(str_consumption_ageRP, geo %in% list_cty & time 
 consumption_ageRP <- merge(str_consumption_ageRP, avg_consumption_ageRP, by = c("geo", "time","age"))
 consumption_ageRP <- mutate(consumption_ageRP,
                             consumption = consumption*share)
-consumption_ageRP <- merge(consumption_ageRP, rateLv2, by.x = c("geo","coicop"), by.y = c("country","coicop"))
+consumption_ageRP <- merge(consumption_ageRP, rateLv2, by = c("geo","coicop"))
 consumption_ageRP <- mutate(consumption_ageRP,
                             vat = consumption*vatRate/(100 + vatRate))
 vat_ageRP <- consumption_ageRP %>%
@@ -226,3 +223,13 @@ vat_ageRP <- consumption_ageRP %>%
 
 vat_ageRP <- mutate(vat_ageRP,
                     vatRate = round(vat/(consumption_pc - vat)*100, digits = 2))
+
+figure4 <- dcast(vat_ageRP, geo~age, value.var = "vatRate")
+figure4 <- merge(figure4, countryOrder, by.x = "geo", by.y = "Country")
+figure4 <- arrange(figure4, Protocol_order)
+
+barplot(t(figure4[,3:6]), beside = TRUE, col = c(col1, col2, col3, col4), main = NA,
+        border = NA, legend.text = c("Less than 30","Between 30 and 44","Between 45 and 60","60 and more"),
+        names.arg = figure4$geo, cex.names = 0.5,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
