@@ -151,3 +151,66 @@ barplot(t(figure2[,2:6]), beside = TRUE, col = c(col1, col2, col3, col4, col5), 
 ### FIGURE 3
 #################################################################################################################################################
 
+# household type
+avg_consumption_hhtype <- get_eurostat("hbs_exp_t134", time_format = "num")
+avg_consumption_hhtype <- filter(avg_consumption_hhtype, stat == "DMOM" & time == 2010 & geo %in% list_cty & hhtyp != "TOTAL")
+avg_consumption_hhtype <- arrange(avg_consumption_hhtype, geo, hhtyp)
+
+avg_consumption_hhtype <- merge(avg_consumption_hhtype, dataHbs, by.x = "geo", by.y = "COUNTRY")
+
+avg_consumption_hhtype <- mutate(avg_consumption_hhtype,
+                                 consumption = values/(coeff_price*coeff_pps))
+
+str_consumption_hhtype <- get_eurostat("hbs_str_t224", time_format = "num")
+str_consumption_hhtype <- mutate(str_consumption_hhtype,
+                                 coicop = as.character(coicop),
+                                 coicop = substr(coicop, 3, nchar(coicop)),
+                                 lv = nchar(coicop) - 1, 
+                                 share = values/1000)
+str_consumption_hhtype <- filter(str_consumption_hhtype, geo %in% list_cty & time == 2010 & lv == 2)
+
+consumption_hhtype <- merge(str_consumption_hhtype, avg_consumption_hhtype, by = c("geo", "time","hhtyp"))
+consumption_hhtype <- mutate(consumption_hhtype,
+                             consumption = consumption*share)
+consumption_hhtype <- merge(consumption_hhtype, rateLv2, by.x = c("geo","coicop"), by.y = c("country","coicop"))
+consumption_hhtype <- mutate(consumption_hhtype,
+                             vat = consumption*vatRate/(100 + vatRate))
+vat_hhtype <- consumption_hhtype %>%
+  group_by(geo, hhtyp) %>%
+  summarise(vat = sum(vat),
+            consumption_pc = sum(consumption))
+
+vat_hhtype <- mutate(vat_hhtype,
+                     vatRate = round(vat/(consumption_pc - vat)*100, digits = 2))
+
+# age of the reference person
+avg_consumption_ageRP <- get_eurostat("hbs_exp_t135", time_format = "num")
+avg_consumption_ageRP <- filter(avg_consumption_ageRP, stat == "DMOM" & time == 2010 & geo %in% list_cty & age != "TOTAL")
+avg_consumption_ageRP <- arrange(avg_consumption_ageRP, geo, age)
+
+avg_consumption_ageRP <- merge(avg_consumption_ageRP, dataHbs, by.x = "geo", by.y = "COUNTRY")
+
+avg_consumption_ageRP <- mutate(avg_consumption_ageRP,
+                                consumption = values/(coeff_price*coeff_pps))
+
+str_consumption_ageRP <- get_eurostat("hbs_str_t225", time_format = "num")
+str_consumption_ageRP <- mutate(str_consumption_ageRP,
+                                coicop = as.character(coicop),
+                                coicop = substr(coicop, 3, nchar(coicop)),
+                                lv = nchar(coicop) - 1, 
+                                share = values/1000)
+str_consumption_ageRP <- filter(str_consumption_ageRP, geo %in% list_cty & time == 2010 & lv == 2)
+
+consumption_ageRP <- merge(str_consumption_ageRP, avg_consumption_ageRP, by = c("geo", "time","age"))
+consumption_ageRP <- mutate(consumption_ageRP,
+                            consumption = consumption*share)
+consumption_ageRP <- merge(consumption_ageRP, rateLv2, by.x = c("geo","coicop"), by.y = c("country","coicop"))
+consumption_ageRP <- mutate(consumption_ageRP,
+                            vat = consumption*vatRate/(100 + vatRate))
+vat_ageRP <- consumption_ageRP %>%
+  group_by(geo, age) %>%
+  summarise(vat = sum(vat),
+            consumption_pc = sum(consumption))
+
+vat_ageRP <- mutate(vat_ageRP,
+                    vatRate = round(vat/(consumption_pc - vat)*100, digits = 2))
