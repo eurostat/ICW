@@ -153,13 +153,10 @@ barplot(t(figure2[,2:6]), beside = TRUE, col = c(col1, col2, col3, col4, col5), 
 
 # household type
 avg_consumption_hhtype <- get_eurostat("hbs_exp_t134", time_format = "num")
-avg_consumption_hhtype <- filter(avg_consumption_hhtype, stat == "DMOM" & time == 2010 & geo %in% list_cty & hhtyp != "TOTAL")
-avg_consumption_hhtype <- arrange(avg_consumption_hhtype, geo, hhtyp)
-
-avg_consumption_hhtype <- merge(avg_consumption_hhtype, dataHbs, by.x = "geo", by.y = "COUNTRY")
-
-avg_consumption_hhtype <- mutate(avg_consumption_hhtype,
-                                 consumption = values/(coeff_price*coeff_pps))
+avg_consumption_hhtype <- avg_consumption_hhtype %>%
+  filter(stat == "DMOM" & time == 2010 & geo %in% list_cty & hhtyp != "TOTAL") %>%
+  arrange(geo, hhtyp) %>%
+  rename(consumption = values)
 
 str_consumption_hhtype <- get_eurostat("hbs_str_t224", time_format = "num")
 str_consumption_hhtype <- mutate(str_consumption_hhtype,
@@ -172,7 +169,7 @@ str_consumption_hhtype <- filter(str_consumption_hhtype, geo %in% list_cty & tim
 consumption_hhtype <- merge(str_consumption_hhtype, avg_consumption_hhtype, by = c("geo", "time","hhtyp"))
 consumption_hhtype <- mutate(consumption_hhtype,
                              consumption = consumption*share)
-consumption_hhtype <- merge(consumption_hhtype, rateLv2, by.x = c("geo","coicop"), by.y = c("country","coicop"))
+consumption_hhtype <- merge(consumption_hhtype, rateLv2, by = c("geo","coicop"))
 consumption_hhtype <- mutate(consumption_hhtype,
                              vat = consumption*vatRate/(100 + vatRate))
 vat_hhtype <- consumption_hhtype %>%
@@ -182,6 +179,21 @@ vat_hhtype <- consumption_hhtype %>%
 
 vat_hhtype <- mutate(vat_hhtype,
                      vatRate = round(vat/(consumption_pc - vat)*100, digits = 2))
+
+figure3 <- dcast(vat_hhtype, geo~hhtyp, value.var = "vatRate")
+figure3 <- merge(figure3, countryOrder, by.x = "geo", by.y = "Country")
+figure3 <- arrange(figure3, Protocol_order)
+
+barplot(t(figure3[,2:7]), beside = TRUE, col = c(col1, col1_faded, col2, col2_faded,
+                                                 col3, col3_faded), main = NA,
+        border = NA, legend.text = c("One adult","One adult with dependent children","Two adults",
+                                     "Two adults with dependent children","Three adults and more","Three adults and more with dependent children"),
+        names.arg = figure3$geo, cex.names = 0.5,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
+#################################################################################################################################################
+### FIGURE 4
+#################################################################################################################################################
 
 # age of the reference person
 avg_consumption_ageRP <- get_eurostat("hbs_exp_t135", time_format = "num")
