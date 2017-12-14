@@ -43,7 +43,7 @@ cons <- mutate(cons,
                values_cons = ifelse(is.na(S14), S14_S15*correction_sector, S14))
 vatNA <- merge(select(vatNA, geo, time, values_vat), select(cons, geo, time, values_cons))
 vatNA <- vatNA %>%
-  mutate(vat_rate = round(values_vat/(values_cons - values_vat)*100, digits = 2)) %>%
+  mutate(vatRate_NA = round(values_vat/(values_cons - values_vat)*100, digits = 2)) %>%
   filter(time == 2010) %>%
   mutate(geo = as.character(geo)) %>%
   filter(nchar(geo) == 2) %>%
@@ -79,11 +79,20 @@ rateLv2 <- rateVat %>%
 consumption <- merge(consumption, rateLv2, by = c("geo","time","coicop"))
 consumption <- mutate(consumption,
                       vat = consumption*vatRate/(100 + vatRate))
-vat <- consumption %>%
+vatHbs <- consumption %>%
   group_by(geo) %>%
   summarise(vat = sum(vat),
             consumption_pc = sum(consumption))
 
-vat <- mutate(vat,
-              vatRate = round(vat/(consumption_pc - vat)*100, digits = 2))
+vatHbs <- mutate(vatHbs,
+                 vatRate_hbs = round(vat/(consumption_pc - vat)*100, digits = 2))
+
+figure1 <- merge(vatNA, vatHbs, by = "geo")
+figure1 <- arrange(figure1,
+                   vatRate_NA)
+
+barplot(t(figure1[,c("vatRate_NA","vatRate_hbs")]), beside = TRUE, col = c(col1, col2), main = NA,
+        border = NA, legend.text = c("National accounts", "HBS"),
+        names.arg = figure1$geo, cex.names = 0.5,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
 
