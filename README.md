@@ -1,6 +1,6 @@
 # Source codes for the project on Household Income, Consumption and Wealth (ICW)
 ![experimental](http://ec.europa.eu/eurostat/statistics-explained/images/9/95/Experimental.png)<br />
-This repository is intended to store the codes (in SAS, R or Stata) related to the design and dissemination of the different experimental statisticsfor the project on European households' income, consumption and wealth.
+This repository is intended to store the codes (in SAS, R or Stata) related to the design and dissemination of the different experimental statistics for the project on European households' income, consumption and wealth.
 
 The European Commission has stressed the need to bring social indicators on a par with macroeconomic indicators within the macroeconomic governance. A key part of the strategy is the availability of harmonised statistics at EU level covering the distributional aspects of household income, consumption and wealth. This comes along also with the recommendations of the Sen, Stiglitz and Fitoussi Commission, which have stressed the need for considering income and consumption jointly with wealth and giving more prominence to the distribution of these three dimensions.
 
