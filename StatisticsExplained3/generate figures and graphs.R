@@ -247,4 +247,20 @@ barplot(t(figure5[,6]), beside = TRUE, col = col1, main = NA,
         border = NA,
         names.arg = figure5$geo, cex.names = 0.5)
 
+#################################################################################################################################################
+### FIGURE 6
+#################################################################################################################################################
+
+vat_rate_incQ <- get_eurostat("icw_tax_03", time_format = "num")
+vat_rate_incQ <- filter(vat_rate_incQ, quantile == "MED" & quant_inc != "TOTAL")
+
+figure6 <- dcast(vat_rate_incQ, geo~quant_inc, value.var = "values")
+figure6 <- merge(figure6, countryOrder, by.x = "geo", by.y = "Country")
+figure6 <- arrange(figure6, Protocol_order)
+
+barplot(t(figure6[,2:6]), beside = TRUE, col = c(col1, col2, col3, col4, col5), main = NA,
+        border = NA, legend.text = paste0("Q",1:5),
+        names.arg = figure6$geo, cex.names = 0.5,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
 
