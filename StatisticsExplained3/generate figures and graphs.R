@@ -233,3 +233,18 @@ barplot(t(figure4[,3:6]), beside = TRUE, col = c(col1, col2, col3, col4), main =
         names.arg = figure4$geo, cex.names = 0.5,
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
 
+#################################################################################################################################################
+### FIGURE 5
+#################################################################################################################################################
+
+vat_rate <- get_eurostat("icw_tax_01", time_format = "num")
+figure5 <- vat_rate %>%
+  filter(quantile == "MED" & age == "TOTAL") %>%
+  rename(vatRate = values) %>%
+  arrange(vatRate)
+
+barplot(t(figure5[,6]), beside = TRUE, col = col1, main = NA,
+        border = NA,
+        names.arg = figure5$geo, cex.names = 0.5)
+
+
