@@ -297,3 +297,40 @@ barplot(t(figure8[,2:5]), beside = TRUE, col = c(col1, col2, col3, col4), main =
         names.arg = figure8$geo, cex.names = 0.5,
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
 
+#################################################################################################################################################
+### FIGURE 9
+#################################################################################################################################################
+
+taxNA <- get_eurostat("gov_10a_taxag", time = "num")
+taxNA <- filter(taxNA,
+                sector == "S13" & na_item %in% c("D211","D51A","D613","D59A") & unit == "MIO_EUR")
+taxNA <- taxNA %>%
+  group_by(geo, time) %>%
+  summarise(values_tax = sum(values, na.rm = TRUE))
+
+inc <- get_eurostat("nasa_10_nf_tr", time = "num")
+inc <- filter(inc,
+              sector %in% c("S14","S14_S15") & na_item %in% c("B6G","D5","D613") & unit == "CP_MEUR" & direct == "PAID")
+inc <- dcast(geo+time+na_item~sector, data = inc, value.var = "values")
+
+correction_sector <- inc %>%
+  filter(!is.na(S14)) %>%
+  group_by(time, na_item) %>%
+  summarise(correction_sector = mean(S14/S14_S15))
+inc <- merge(inc, correction_sector, by = c("time","na_item"))
+
+inc <- mutate(inc,
+              values = ifelse(is.na(S14), 
+                              ifelse(S14_S15 == 0, 0, S14_S15*correction_sector), S14))
+inc <- inc %>%
+  group_by(geo, time) %>%
+  summarise(values_inc = sum(values))
+taxNA <- merge(select(taxNA, geo, time, values_tax), select(inc, geo, time, values_inc))
+
+taxNA <- taxNA %>%
+  mutate(tax_rate = round(values_tax/(values_inc)*100, digits = 2)) %>%
+  filter(time == 2010) %>%
+  mutate(geo = as.character(geo)) %>%
+  filter(nchar(geo) == 2) %>%
+  arrange(geo)
+
