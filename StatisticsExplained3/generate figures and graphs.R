@@ -328,9 +328,22 @@ inc <- inc %>%
 taxNA <- merge(select(taxNA, geo, time, values_tax), select(inc, geo, time, values_inc))
 
 taxNA <- taxNA %>%
-  mutate(tax_rate = round(values_tax/(values_inc)*100, digits = 2)) %>%
-  filter(time == 2010) %>%
+  mutate(tax_rate_na = round(values_tax/(values_inc)*100, digits = 2)) %>%
   mutate(geo = as.character(geo)) %>%
   filter(nchar(geo) == 2) %>%
   arrange(geo)
+
+taxSurvey <- get_eurostat("icw_tax_07", time_format = "num")
+taxSurvey <- taxSurvey %>%
+  filter(quantile == "MED" & age == "TOTAL") %>%
+  select(geo, time, values) %>%
+  rename(tax_rate_survey = values)
+
+figure9 <- merge(taxNA, taxSurvey, by = c("geo","time"), all.y = TRUE)
+figure9 <- arrange(tax, tax_rate_survey)
+
+barplot(t(figure9[,c("tax_rate_survey","tax_rate_na")]), beside = TRUE, col = c(col1, col2), main = NA,
+        border = NA, legend.text = c("Median", "Aggregate"),
+        names.arg = figure9$geo, cex.names = 0.5,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
 
