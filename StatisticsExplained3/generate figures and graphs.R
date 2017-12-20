@@ -347,3 +347,21 @@ barplot(t(figure9[,c("tax_rate_survey","tax_rate_na")]), beside = TRUE, col = c(
         names.arg = figure9$geo, cex.names = 0.5,
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
 
+#################################################################################################################################################
+### FIGURE 10
+#################################################################################################################################################
+
+tax_rate_incQ <- get_eurostat("icw_tax_09", time_format = "num")
+tax_rate_incQ <- filter(tax_rate_incQ, quantile == "MED" & quant_inc != "TOTAL")
+
+figure9 <- dcast(tax_rate_incQ, geo~quant_inc, value.var = "values")
+figure9 <- merge(figure9, countryOrder, by.x = "geo", by.y = "Country")
+figure9 <- arrange(figure9, Protocol_order)
+
+barplot(t(figure9[,2:6]), beside = TRUE, col = c(col1, col2, col3, col4, col5), main = NA,
+        border = NA, legend.text = paste0("Q",1:5),
+        names.arg = figure9$geo, cex.names = 0.5,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
+
+
