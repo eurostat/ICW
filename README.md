@@ -12,5 +12,10 @@ They also have the possibility to have more insights in the concrete implementat
 
 The second one aims at building bridges between macro and micro-statistics regarding Income, Consumption and Wealth. Similarly to the work carried out by several organisations (OECD, ECB,...), the purpose of this workstream is to reconcile concepts from macro and micro-statistics and produce meso-data that will be consistent at the micro and the macro-level.
 
+This repository is organised into different folders, each of them corresponding to a part of this project. In particular, different Statistics Explained articles have been published in order to tackle the different analytical and methodological issues such statistics raise. Hence, some of the folders contain pieces of script that make it possible to generate the figures shown in the different articles:
+* the folder [StatisticsExplained1](https://github.com/eurostat/ICW/tree/master/StatisticsExplained1) for the graphs in the analytical article on [the interaction of household income, consumption and wealth](http://ec.europa.eu/eurostat/statistics-explained/index.php?title=Interaction_of_household_income,_consumption_and_wealth_-_statistics_on_main_results);
+* the folder [StatisticsExplained2](https://github.com/eurostat/ICW/tree/master/StatisticsExplained2) for the graphs in the background paper on [the methodological issues](http://ec.europa.eu/eurostat/statistics-explained/index.php/Interaction_of_household_income,_consumption_and_wealth_-_methodological_issues);
+* the folder [StatisticsExplained3](https://github.com/eurostat/ICW/tree/master/StatisticsExplained3) for the graphs in the analytical article on [the statistics on taxation](http://ec.europa.eu/eurostat/statistics-explained/index.php/Interaction_of_household_income,_consumption_and_wealth_%E2%80%93_statistics_on_taxation).
+
 # References
 Lahti, L., J. Huovari, M. Kainu and P. Biecek (2017), Retrieval and Analysis of Eurostat Open Data with the eurostat Package, *The R Journal, 9:1, pages 385-392*, available at https://journal.r-project.org/archive/2017/RJ-2017-019/index.html.
