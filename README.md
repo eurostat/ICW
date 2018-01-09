@@ -17,5 +17,9 @@ This repository is organised into different folders, each of them corresponding 
 * the folder [StatisticsExplained2](https://github.com/eurostat/ICW/tree/master/StatisticsExplained2) for the graphs in the background paper on [the methodological issues](http://ec.europa.eu/eurostat/statistics-explained/index.php/Interaction_of_household_income,_consumption_and_wealth_-_methodological_issues);
 * the folder [StatisticsExplained3](https://github.com/eurostat/ICW/tree/master/StatisticsExplained3) for the graphs in the analytical article on [the statistics on taxation](http://ec.europa.eu/eurostat/statistics-explained/index.php/Interaction_of_household_income,_consumption_and_wealth_%E2%80%93_statistics_on_taxation).
 
+Other pieces of codes are made available, such as:
+* the computation of [VAT paid by the households](https://github.com/eurostat/ICW/tree/master/VAT), on the basis of the structure of their consumption, as reported according to the [COICOP](https://unstats.un.org/unsd/cr/registry/regcst.asp?Cl=5) in the Household Budget Survey;
+* ...
+
 # References
 Lahti, L., J. Huovari, M. Kainu and P. Biecek (2017), Retrieval and Analysis of Eurostat Open Data with the eurostat Package, *The R Journal, 9:1, pages 385-392*, available at https://journal.r-project.org/archive/2017/RJ-2017-019/index.html.
