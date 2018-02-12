@@ -124,6 +124,11 @@ lvl2 <- readWorksheetFromFile(tempFile, sheet = "LEVEL2")
 lvl3 <- readWorksheetFromFile(tempFile, sheet = "LEVEL3")
 lvl4 <- readWorksheetFromFile(tempFile, sheet = "LEVEL4")
 
+names(lvl1) <- paste0(names(lvl1), "_LEVEL1")
+names(lvl2) <- paste0(names(lvl2), "_LEVEL2")
+names(lvl3) <- paste0(names(lvl3), "_LEVEL3")
+names(lvl4) <- paste0(names(lvl4), "_LEVEL4")
+
 lvl4 <- mutate(lvl4,
                CODE_LEVEL1 = substr(CODE_LEVEL4, 1, 2),
                CODE_LEVEL2 = substr(CODE_LEVEL4, 1, 3),
@@ -150,7 +155,4 @@ coicopVAT <- mutate(coicopVAT,
 
 save(coicopVAT, file = "coicopVAT.RData")
 
-names(lvl1) <- paste0(names(lvl1), "_LEVEL1")
-names(lvl2) <- paste0(names(lvl2), "_LEVEL2")
-names(lvl3) <- paste0(names(lvl3), "_LEVEL3")
-names(lvl4) <- paste0(names(lvl4), "_LEVEL4")
+
