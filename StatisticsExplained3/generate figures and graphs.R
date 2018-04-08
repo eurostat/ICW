@@ -340,7 +340,7 @@ taxSurvey <- taxSurvey %>%
   rename(tax_rate_survey = values)
 
 figure9 <- merge(taxNA, taxSurvey, by = c("geo","time"), all.y = TRUE)
-figure9 <- arrange(tax, tax_rate_survey)
+figure9 <- arrange(figure9, tax_rate_survey)
 
 barplot(t(figure9[,c("tax_rate_survey","tax_rate_na")]), beside = TRUE, col = c(col1, col2), main = NA,
         border = NA, legend.text = c("Median", "Aggregate"),
